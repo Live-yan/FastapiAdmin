@@ -1,5 +1,5 @@
 import { saveAs } from "file-saver";
-import { request } from "@utils";
+import { request, type ExtendedRequestConfig } from "@utils";
 
 const API_PATH = "/industrial/zijinbridge";
 
@@ -37,6 +37,10 @@ function zijinHeaders(token?: string) {
   return token ? { "X-Zijin-Token": token } : {};
 }
 
+function apiRequest<T = ApiResponse>(config: ExtendedRequestConfig) {
+  return request<T>(config);
+}
+
 async function exportBlob(
   path: string,
   payload: Record<string, any>,
@@ -54,7 +58,7 @@ async function exportBlob(
 
 const ZijinBridgeAPI = {
   login(payload: ConnectionConfig & { user: string; password: string }) {
-    return request<ApiResponse>({
+    return apiRequest<ApiResponse>({
       url: `${API_PATH}/login`,
       method: "post",
       data: payload,
@@ -63,7 +67,7 @@ const ZijinBridgeAPI = {
   },
 
   logout(payload: ConnectionConfig, token: string) {
-    return request<ApiResponse>({
+    return apiRequest<ApiResponse>({
       url: `${API_PATH}/logout`,
       method: "post",
       data: payload,
@@ -73,7 +77,7 @@ const ZijinBridgeAPI = {
   },
 
   status(payload: ConnectionConfig, token = "") {
-    return request<ApiResponse>({
+    return apiRequest<ApiResponse>({
       url: `${API_PATH}/status`,
       method: "post",
       data: payload,
@@ -83,7 +87,7 @@ const ZijinBridgeAPI = {
   },
 
   directory(payload: ConnectionConfig, token = "", nodePath = "") {
-    return request<ApiResponse>({
+    return apiRequest<ApiResponse>({
       url: `${API_PATH}/directory`,
       method: "post",
       params: { node_path: nodePath },
@@ -97,7 +101,7 @@ const ZijinBridgeAPI = {
     payload: ConnectionConfig & { node_path: string; recursion?: boolean; decimal?: number },
     token = ""
   ) {
-    return request<ApiResponse>({
+    return apiRequest<ApiResponse>({
       url: `${API_PATH}/points`,
       method: "post",
       data: payload,
@@ -116,7 +120,7 @@ const ZijinBridgeAPI = {
     },
     token = ""
   ) {
-    return request<ApiResponse>({
+    return apiRequest<ApiResponse>({
       url: `${API_PATH}/realtime/query`,
       method: "post",
       data: payload,
@@ -129,7 +133,7 @@ const ZijinBridgeAPI = {
     payload: ConnectionConfig & { regname: string; names: string[] },
     token: string
   ) {
-    return request<ApiResponse>({
+    return apiRequest<ApiResponse>({
       url: `${API_PATH}/realtime/register`,
       method: "post",
       data: payload,
@@ -141,7 +145,7 @@ const ZijinBridgeAPI = {
     payload: ConnectionConfig & { regname: string; decimal?: number },
     token: string
   ) {
-    return request<ApiResponse>({
+    return apiRequest<ApiResponse>({
       url: `${API_PATH}/realtime/registered`,
       method: "post",
       data: payload,
@@ -154,7 +158,7 @@ const ZijinBridgeAPI = {
     payload: ConnectionConfig & { items: Array<{ name: string; val: any }> },
     token = ""
   ) {
-    return request<ApiResponse>({
+    return apiRequest<ApiResponse>({
       url: `${API_PATH}/realtime/write`,
       method: "post",
       data: payload,
@@ -163,7 +167,7 @@ const ZijinBridgeAPI = {
   },
 
   history(payload: HistoryPayload, token = "") {
-    return request<ApiResponse>({
+    return apiRequest<ApiResponse>({
       url: `${API_PATH}/history/query`,
       method: "post",
       data: payload,
@@ -173,7 +177,7 @@ const ZijinBridgeAPI = {
   },
 
   writeHistory(payload: ConnectionConfig & { items: any[] }, token = "") {
-    return request<ApiResponse>({
+    return apiRequest<ApiResponse>({
       url: `${API_PATH}/history/write`,
       method: "post",
       data: payload,
@@ -191,7 +195,7 @@ const ZijinBridgeAPI = {
   },
 
   sql(payload: ConnectionConfig & { query: string; read_only?: boolean }, token = "") {
-    return request<ApiResponse>({
+    return apiRequest<ApiResponse>({
       url: `${API_PATH}/sql/query`,
       method: "post",
       data: payload,
@@ -201,7 +205,7 @@ const ZijinBridgeAPI = {
   },
 
   alarms(payload: AlarmPayload, token = "") {
-    return request<ApiResponse>({
+    return apiRequest<ApiResponse>({
       url: `${API_PATH}/alarms/query`,
       method: "post",
       data: payload,
