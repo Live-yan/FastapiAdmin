@@ -52,7 +52,7 @@ jobs:
           cache-dependency-path: frontend/web/pnpm-lock.yaml
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+      - name: Generate auto-import types and build
+        run: pnpm build:prod
       - name: Type check
         run: pnpm type-check
-      - name: Build
-        run: pnpm build
