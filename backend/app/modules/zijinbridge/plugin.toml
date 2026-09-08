@@ -1,0 +1,8 @@
+# 见 docs/PLUGIN_ARCHITECTURE.md
+
+name = "zijinbridge"
+title = "紫金桥实时数据库"
+version = "1.0.0"
+description = "紫金桥跨平台实时数据库管理：连接、点位、实时/历史数据、报警、SQL、批量导出。"
+optional = true
+tags = ["industrial", "zijinbridge", "realtime-database"]
