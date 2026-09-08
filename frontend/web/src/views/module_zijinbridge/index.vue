@@ -541,9 +541,9 @@ function stopPolling() {
   if (pollingTimer) clearInterval(pollingTimer);
   pollingTimer = null;
 }
-function onPollingChange(enabled: boolean) {
+function onPollingChange(enabled: string | number | boolean) {
   stopPolling();
-  if (enabled) {
+  if (Boolean(enabled)) {
     void queryRealtime(true);
     pollingTimer = setInterval(() => void queryRealtime(true), pollSeconds.value * 1000);
   }
