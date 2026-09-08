@@ -1,0 +1,58 @@
+name: ZijinBridge PR checks
+
+on:
+  pull_request:
+    paths:
+      - "backend/app/modules/zijinbridge/**"
+      - "backend/tests/test_zijinbridge_service.py"
+      - "backend/app/api/v1/routers.py"
+      - "backend/app/__init__.py"
+      - "frontend/web/src/api/module_zijinbridge/**"
+      - "frontend/web/src/views/module_zijinbridge/**"
+      - ".github/workflows/zijinbridge-pr.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.12"
+          enable-cache: true
+      - name: Sync dependencies
+        run: uv sync --frozen
+      - name: Ruff
+        run: uv run ruff check app/modules/zijinbridge tests/test_zijinbridge_service.py
+      - name: ZijinBridge unit tests
+        run: uv run pytest tests/test_zijinbridge_service.py -q
+
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend/web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.3
+          run_install: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: pnpm
+          cache-dependency-path: frontend/web/pnpm-lock.yaml
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Generate auto-import types and build
+        run: pnpm build:prod
+      - name: Type check
+        run: pnpm type-check
